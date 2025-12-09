@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Dataset Collection Interface</title>
+	<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/inntot-mfk/inntot-mfk.github.io@site/style.css"/>
+	<link rel="preload" href="https://cdn.jsdelivr.net/gh/inntot-mfk/inntot-mfk.github.io@site/script.js"/>
+</head>
+<body>
+	<div class="card">
+		<div class="header">
+			<h1>Voice Collection</h1>
+			<div id="statusBadge" class="status-badge">Connecting...</div>
+		</div>
+		<div class="input-group">
+			<div class="input-label">
+				<span>Select Wake Word</span>
+				<span id="progressText" class="progress-text">0/5 Completed</span>
+			</div>
+			<div id="badgeContainer" class="progress-badges">
+			</div>
+			<div class="select-wrapper" style="margin-top: 0.5rem;">
+				<select id="wakeWordSelect">
+				</select>
+				<i class="fa-solid fa-chevron-down select-arrow"></i>
+			</div>
+		</div>
+		<div class="visualizer-container" id="visualizerContainer">
+			<div id="micWrapper" class="mic-wrapper">
+				<i class="fa-solid fa-microphone"></i>
+			</div>
+			<div class="level-bar-container">
+				<div id="levelBar" class="level-bar-fill"></div>
+			</div>
+			<button id="recordBtn" class="btn btn-record">
+				<i class="fa-solid fa-circle"></i> <span>Start Recording</span>
+			</button>
+		</div>
+		<div id="previewSection" class="preview-section">
+			<audio id="audioPreview" controls></audio>
+			<button id="uploadBtn" class="btn btn-upload">
+				<i class="fa-solid fa-cloud-arrow-up"></i> Upload Data
+			</button>
+		</div>
+		<div id="resultSection" class="result-section"></div>
+	</div>
+	<script type="module" src="https://cdn.jsdelivr.net/gh/inntot-mfk/inntot-mfk.github.io@site/script.js"></script>
+</body>
+</html>
