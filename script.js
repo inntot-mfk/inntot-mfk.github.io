@@ -207,5 +207,6 @@ document.getElementById('uploadBtn').onclick = async () => {
 	} finally {
 		btn.disabled = false;
 		btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Upload Data';
+		document.getElementById('recordBtn').innerHTML = '<i class="fa-solid fa-circle"></i> Record Next Word';
 	}
 };
