@@ -1,5 +1,5 @@
 import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js"
-const GRADIO_URL = "https://20601bb99f79cc430e.gradio.live";
+const GRADIO_URL = "https://7276c0601192f65bdf.gradio.live";
 const WAKE_WORDS = [
 	{ id: "alexa", label: "Alexa" },
 	{ id: "hi_alexa", label: "Hi Alexa" },
@@ -207,6 +207,5 @@ document.getElementById('uploadBtn').onclick = async () => {
 	} finally {
 		btn.disabled = false;
 		btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Upload Data';
-		document.getElementById('recordBtn').innerHTML = '<i class="fa-solid fa-circle"></i> Record Next Word';
 	}
 };
