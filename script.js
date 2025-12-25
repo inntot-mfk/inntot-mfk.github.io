@@ -1,5 +1,5 @@
 import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js"
-const GRADIO_URL = "https://7276c0601192f65bdf.gradio.live";
+const GRADIO_URL = "https://e03071e407334d5259.gradio.live";
 const WAKE_WORDS = [
 	{ id: "alexa", label: "Alexa" },
 	{ id: "hi_alexa", label: "Hi Alexa" },
