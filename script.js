@@ -1,5 +1,5 @@
 import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js"
-const GRADIO_URL = "https://45cd26ecb1302befab.gradio.live";
+const GRADIO_URL = "https://5ae23cabe9e417a8bc.gradio.live";
 
 const COUNTRIES = [
 	"USA", "Mexico", "Canada", "Puerto Rico", "Brazil", "Argentina", 
