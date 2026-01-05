@@ -5,7 +5,7 @@ const COUNTRIES = [
 	"USA", "Mexico", "Canada", "Puerto Rico", "Brazil", "Argentina", 
 	"Portugal", "Germany", "France", "Slovakia", "Romania", "Bulgaria", 
 	"Hungary", "Spain", "China", "India", "Japan", "Thailand", 
-	"Taiwan", "Hong Kong", "Tunisia"
+	"Taiwan", "Hong Kong", "Tunisia", "UK"
 ];
 
 const WAKE_WORDS = [
