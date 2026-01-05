@@ -10,24 +10,83 @@
 	<link rel="preload" href="https://cdn.jsdelivr.net/gh/inntot-mfk/inntot-mfk.github.io@site_v1/script.js"/>
 </head>
 <body>
+	<div id="helpModal" class="modal-overlay">
+		<div class="modal-box" style="height: auto;">
+			<div class="modal-header">
+				<h2>How to use</h2>
+				<button id="closeHelpBtn" class="close-modal">&times;</button>
+			</div>
+			<ul class="help-list">
+				<li><i class="fa-solid fa-earth-americas"></i> <span>Select your <b>Country</b> from the list.</span></li>
+				<li><i class="fa-solid fa-list"></i> <span>Choose a <b>Wake Word</b> you want to record.</span></li>
+				<li><i class="fa-solid fa-microphone"></i> <span>Click <b>Start Recording</b>.</span></li>
+				<li><i class="fa-solid fa-comment-dots"></i> <span>Clearly say the phrase shown on the screen.</span></li>
+				<li><i class="fa-solid fa-cloud-arrow-up"></i> <span>Click <b>Stop</b>, then click <b>Upload Data</b>.</span></li>
+			</ul>
+		</div>
+	</div>
+
+	<div id="countryModal" class="modal-overlay">
+		<div class="modal-box">
+			<div class="modal-header">
+				<h2>Select your Country</h2>
+				<button id="closeCountryBtn" class="close-modal">&times;</button>
+			</div>
+			<div id="countryGrid" class="country-grid">
+				</div>
+		</div>
+	</div>
+
+	<div id="recordingOverlay" class="recording-overlay">
+		<div class="overlay-content">
+			<div class="overlay-icon">
+				<i class="fa-solid fa-microphone"></i>
+			</div>
+			<div>
+				<div class="overlay-text">Please say exactly:</div>
+				<h1 id="overlayCommand" class="overlay-command">"Alexa"</h1>
+			</div>
+			<button id="overlayStopBtn" class="btn btn-stop-overlay">
+				<i class="fa-solid fa-square"></i> Stop Recording
+			</button>
+		</div>
+	</div>
+
 	<div class="card">
 		<div class="header">
-			<h1>Voice Collection</h1>
+			<div class="title-row">
+				<h1>Voice Collection</h1>
+				<i class="fa-regular fa-circle-question help-icon" id="openHelpBtn" title="Help"></i>
+			</div>
 			<div id="statusBadge" class="status-badge">Connecting...</div>
 		</div>
+		
 		<div class="input-group">
-			<div class="input-label">
-				<span>Select Wake Word</span>
-				<span id="progressText" class="progress-text">0/5 Completed</span>
+			<div class="input-block">
+				<div class="input-label">
+					<span>Region</span>
+				</div>
+				<button id="countryTriggerBtn" class="country-trigger-btn">
+					<span id="countryDisplay">Select your country...</span>
+					<i class="fa-solid fa-chevron-down" style="font-size: 0.8rem;"></i>
+				</button>
 			</div>
-			<div id="badgeContainer" class="progress-badges">
-			</div>
-			<div class="select-wrapper" style="margin-top: 0.5rem;">
-				<select id="wakeWordSelect">
-				</select>
-				<i class="fa-solid fa-chevron-down select-arrow"></i>
+
+			<div class="input-block">
+				<div class="input-label">
+					<span>Select Wake Word</span>
+					<span id="progressText" class="progress-text">0/5 Completed</span>
+				</div>
+				<div id="badgeContainer" class="progress-badges">
+				</div>
+				<div class="select-wrapper">
+					<select id="wakeWordSelect">
+					</select>
+					<i class="fa-solid fa-chevron-down select-arrow"></i>
+				</div>
 			</div>
 		</div>
+
 		<div class="visualizer-container" id="visualizerContainer">
 			<div id="micWrapper" class="mic-wrapper">
 				<i class="fa-solid fa-microphone"></i>
@@ -39,6 +98,7 @@
 				<i class="fa-solid fa-circle"></i> <span>Start Recording</span>
 			</button>
 		</div>
+
 		<div id="previewSection" class="preview-section">
 			<audio id="audioPreview" controls></audio>
 			<button id="uploadBtn" class="btn btn-upload">
