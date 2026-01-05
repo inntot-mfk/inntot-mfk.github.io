@@ -1,5 +1,13 @@
 import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js"
-const GRADIO_URL = "https://e03071e407334d5259.gradio.live";
+const GRADIO_URL = "https://45cd26ecb1302befab.gradio.live";
+
+const COUNTRIES = [
+	"USA", "Mexico", "Canada", "Puerto Rico", "Brazil", "Argentina", 
+	"Portugal", "Germany", "France", "Slovakia", "Romania", "Bulgaria", 
+	"Hungary", "Spain", "China", "India", "Japan", "Thailand", 
+	"Taiwan", "Hong Kong", "Tunisia"
+];
+
 const WAKE_WORDS = [
 	{ id: "alexa", label: "Alexa" },
 	{ id: "hi_alexa", label: "Hi Alexa" },
@@ -23,12 +31,67 @@ let audioContext;
 let analyser;
 let dataArray;
 let animationId;
+let selectedCountry = "";
 
 const select = document.getElementById('wakeWordSelect');
 const badgeContainer = document.getElementById('badgeContainer');
 const micWrapper = document.getElementById('micWrapper');
 const levelBar = document.getElementById('levelBar');
 const visualizerContainer = document.getElementById('visualizerContainer');
+const recordingOverlay = document.getElementById('recordingOverlay');
+const overlayCommand = document.getElementById('overlayCommand');
+const overlayStopBtn = document.getElementById('overlayStopBtn');
+
+const helpModal = document.getElementById('helpModal');
+const countryModal = document.getElementById('countryModal');
+const countryTriggerBtn = document.getElementById('countryTriggerBtn');
+const countryDisplay = document.getElementById('countryDisplay');
+const countryGrid = document.getElementById('countryGrid');
+
+function openModal(modal) { modal.classList.add('open'); }
+function closeModal(modal) { modal.classList.remove('open'); }
+
+document.getElementById('openHelpBtn').onclick = () => openModal(helpModal);
+document.getElementById('closeHelpBtn').onclick = () => closeModal(helpModal);
+helpModal.onclick = (e) => { if(e.target === helpModal) closeModal(helpModal); };
+
+countryTriggerBtn.onclick = () => openModal(countryModal);
+document.getElementById('closeCountryBtn').onclick = () => closeModal(countryModal);
+countryModal.onclick = (e) => { if(e.target === countryModal && selectedCountry !== "") closeModal(countryModal); };
+
+function initCountryGrid() {
+	countryGrid.innerHTML = '';
+	COUNTRIES.sort().forEach(country => {
+		const btn = document.createElement('button');
+		btn.className = 'country-btn';
+		btn.innerText = country;
+		btn.onclick = () => {
+			selectCountry(country);
+		};
+		countryGrid.appendChild(btn);
+	});
+
+	setTimeout(() => openModal(countryModal), 500);
+}
+
+function selectCountry(country) {
+	selectedCountry = country;
+	countryDisplay.innerText = country;
+	countryTriggerBtn.classList.add('selected');
+	closeModal(countryModal);
+}
+
+// --- WAKE WORD & UI LOGIC ---
+function initDropdowns() {
+	select.innerHTML = '';
+	WAKE_WORDS.forEach(word => {
+		const opt = document.createElement('option');
+		opt.value = word.id;
+		opt.innerText = word.label;
+		select.appendChild(opt);
+	});
+	select.addEventListener('change', updateSelectVisuals);
+}
 
 function renderUI() {
 	badgeContainer.innerHTML = '';
@@ -57,18 +120,6 @@ function renderUI() {
 	}
 }
 
-function initDropdown() {
-	select.innerHTML = '';
-	WAKE_WORDS.forEach(word => {
-		const opt = document.createElement('option');
-		opt.value = word.id;
-		opt.innerText = word.label;
-		select.appendChild(opt);
-	});
-	
-	select.addEventListener('change', updateSelectVisuals);
-}
-
 function updateSelectVisuals() {
 	const currentVal = select.value;
 	Array.from(badgeContainer.children).forEach((badge, idx) => {
@@ -77,7 +128,8 @@ function updateSelectVisuals() {
 	});
 }
 
-initDropdown();
+initDropdowns();
+initCountryGrid();
 renderUI();
 updateSelectVisuals();
 
@@ -100,22 +152,16 @@ function startVisualizer(stream) {
 	const source = audioContext.createMediaStreamSource(stream);
 	analyser = audioContext.createAnalyser();
 	analyser.fftSize = 256;
-	
 	source.connect(analyser);
 	dataArray = new Uint8Array(analyser.frequencyBinCount);
 
 	function draw() {
 		analyser.getByteFrequencyData(dataArray);
 		let sum = 0;
-		for(let i = 0; i < dataArray.length; i++) {
-			sum += dataArray[i];
-		}
+		for(let i = 0; i < dataArray.length; i++) { sum += dataArray[i]; }
 		let average = sum / dataArray.length;
-
 		const percentage = Math.min(100, (average / 100) * 100); 
-
 		levelBar.style.width = `${percentage}%`;
-
 		animationId = requestAnimationFrame(draw);
 	}
 	draw();
@@ -127,11 +173,17 @@ function stopVisualizer() {
 	levelBar.style.width = '0%';
 }
 
-document.getElementById('recordBtn').onclick = async () => {
+async function toggleRecording() {
 	if (!isRecording) {
+		// VALIDATION: Check global variable selectedCountry
+		if (!selectedCountry || selectedCountry === "") {
+			alert("Please select your country before recording.");
+			openModal(countryModal);
+			return;
+		}
+
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-			
 			const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
 			mimeType = types.find(t => MediaRecorder.isTypeSupported(t)) || '';
 			
@@ -143,7 +195,6 @@ document.getElementById('recordBtn').onclick = async () => {
 				audioBlob = new Blob(audioChunks, { type: mimeType });
 				document.getElementById('audioPreview').src = URL.createObjectURL(audioBlob);
 				document.getElementById('previewSection').classList.add('show');
-				
 				stream.getTracks().forEach(t => t.stop());
 				stopVisualizer();
 			};
@@ -153,11 +204,14 @@ document.getElementById('recordBtn').onclick = async () => {
 
 			isRecording = true;
 			document.getElementById('recordBtn').innerHTML = '<i class="fa-solid fa-stop"></i> Stop';
-			
 			micWrapper.classList.add('active');
 			visualizerContainer.classList.add('recording-active');
-			
 			document.getElementById('resultSection').classList.remove('show');
+			
+			const selectedLabel = WAKE_WORDS.find(w => w.id === select.value).label;
+			overlayCommand.innerText = `"${selectedLabel}"`;
+			recordingOverlay.classList.add('active');
+
 		} catch (err) {
 			alert("Microphone Access Error: " + err.message);
 		}
@@ -165,11 +219,14 @@ document.getElementById('recordBtn').onclick = async () => {
 		mediaRecorder.stop();
 		isRecording = false;
 		document.getElementById('recordBtn').innerHTML = '<i class="fa-solid fa-circle"></i> Record Again';
-		
 		micWrapper.classList.remove('active');
 		visualizerContainer.classList.remove('recording-active');
+		recordingOverlay.classList.remove('active');
 	}
-};
+}
+
+document.getElementById('recordBtn').onclick = toggleRecording;
+overlayStopBtn.onclick = toggleRecording;
 
 document.getElementById('uploadBtn').onclick = async () => {
 	const btn = document.getElementById('uploadBtn');
@@ -180,6 +237,7 @@ document.getElementById('uploadBtn').onclick = async () => {
 	
 	try {
 		const wakeWord = select.value;
+		const country = selectedCountry; 
 		
 		let ext = "webm";
 		if (mimeType.includes("mp4")) ext = "mp4";
@@ -187,7 +245,7 @@ document.getElementById('uploadBtn').onclick = async () => {
 
 		const file = new File([audioBlob], `audio.${ext}`, { type: mimeType });
 
-		const result = await appClient.predict("/predict", [file, wakeWord]);
+		const result = await appClient.predict("/predict", [file, wakeWord, country]);
 
 		resultBox.innerText = result.data[1]; 
 		resultBox.classList.add('show');
@@ -209,3 +267,4 @@ document.getElementById('uploadBtn').onclick = async () => {
 		btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Upload Data';
 	}
 };
+
