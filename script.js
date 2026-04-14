@@ -61,7 +61,7 @@ countryModal.onclick = (e) => { if(e.target === countryModal && selectedCountry 
 
 function initCountryGrid() {
 	countryGrid.innerHTML = '';
-	COUNTRIES.sort().forEach(country => {
+	COUNTRIES.forEach(country => {
 		const btn = document.createElement('button');
 		btn.className = 'country-btn';
 		btn.innerText = country;
