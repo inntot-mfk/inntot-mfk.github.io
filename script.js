@@ -10,14 +10,14 @@ const COUNTRIES = [
 
 const WAKE_WORDS = [
 	{ id: "alexa", label: "Alexa" },
-	{ id: "hi_alexa", label: "Hi Alexa" },
-	{ id: "hey_alexa", label: "Hey Alexa" },
-	{ id: "google", label: "Google" },
-	{ id: "hi_google", label: "Hi Google" },
-	{ id: "hey_google", label: "Hey Google" },
 	{ id: "siri", label: "Siri" },
-	{ id: "hi_siri", label: "Hi Siri" },
+	{ id: "google", label: "Google" },
 	{ id: "hey_siri", label: "Hey Siri" },
+	{ id: "hey_alexa", label: "Hey Alexa" },
+	{ id: "hey_google", label: "Hey Google" },
+	{ id: "hi_alexa", label: "Hi Alexa" },
+	{ id: "hi_siri", label: "Hi Siri" },
+	{ id: "hi_google", label: "Hi Google" }
 ];
 
 let appClient;
